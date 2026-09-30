@@ -1,0 +1,20 @@
+---
+- name: Create IP Space
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+
+    - name: Create an IPspace for the OpenShift tenant
+      netapp.ontap.na_ontap_ipspace:
+        state: present
+        name: "{{ipspace_name}}"
+        hostname: "{{ ontap_hostname }}"
+        username: "{{ ontap_username }}"
+        password: "{{ ontap_password }}"
+        use_rest: always
+        https: true
+        validate_certs: false
+
+    

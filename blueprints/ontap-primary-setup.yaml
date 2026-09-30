@@ -143,7 +143,9 @@ customization:
               - name: snmp_auth_password
               - name: snmp_priv_protocol
               - name: snmp_priv_password
-
+          - name: IP space and Broadcast Domain Configuration
+            inputs:
+              - name: ipspace_name
 inputs:
   agent:
     type: agent
@@ -154,6 +156,7 @@ inputs:
   ontap_username:
     type: string
     description: ONTAP cluster administrator username.
+    default: 'admin'
   ontap_password:
     type: string
     sensitive: true
@@ -190,7 +193,7 @@ inputs:
     default: "[]"
     description: >-
       Leave empty to skip aggregate creation. Otherwise one row per aggregate,
-      naming the node, the aggregate, and how       many disks it uses.
+      naming the node, the aggregate, and how many disks it uses.
   ha_pair_count:
     type: string
     default: ""
@@ -295,6 +298,10 @@ inputs:
     type: string
     default: ""
     description: Login banner text.
+  ipspace_name:
+    type: string
+    default: ""
+    description: Name of the IP space to be created.
 
 grains:
   update_cluster_location:
@@ -605,7 +612,6 @@ grains:
 
   create_login_banner:
     kind: ansible
-    when: '{% if .inputs.cluster_login_banner != "" %}true{% else %}false{% endif %}'
     spec:
       source:
         store: Stack-Automation-NetApp
@@ -617,3 +623,17 @@ grains:
         - ontap_username: '{{ .inputs.ontap_username }}'
         - ontap_password: '{{ .inputs.ontap_password }}'
         - cluster_login_banner: '{{ .inputs.cluster_login_banner }}'
+  
+  create_ip_space:
+    kind: ansible
+    spec:
+      source:
+        store: Stack-Automation-NetApp
+        path: assets/ansible/netapp-ontap/create_ip_space.yaml
+      agent:
+        name: '{{ .inputs.agent }}'
+      inputs:
+        - ontap_hostname: '{{ .inputs.ontap_hostname }}'
+        - ontap_username: '{{ .inputs.ontap_username }}'
+        - ontap_password: '{{ .inputs.ontap_password }}'
+        - ipspace_name: '{{ .inputs.ipspace_name }}'
