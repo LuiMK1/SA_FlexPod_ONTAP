@@ -90,7 +90,6 @@ customization:
             inputs:
               - name: agent
           - name: Cluster Details
-            default_open: true
             inputs:
               - name: ontap_hostname
               - name: ontap_username
@@ -103,54 +102,36 @@ customization:
               - name: node_names
               - name: cluster_mgmt_interface
               - name: cluster_mgmt_auto_revert          
-      - name: Ports
-        icon: tags
-        sections:
-          - name: BROADCAST DOMAINS AND SERVICE PROCESSOR
+          - name: Cluster Port parameters
             inputs:
               - name: node_port_counts
               - name: sp_interfaces
                 type: object
                 header: Node Name,SP IP,Netmask,Gateway
-          - name: DATA PORTS
-            inputs:
               - name: data_ports
                 type: object
                 header: Node Name,Data Ports
-      - name: Data aggregates
-        icon: tags
-        sections:
-          - name: AGGREGATES
-            default_open: true
+          - name: Data aggregates
             inputs:
               - name: aggregates
                 type: object
                 header: Node Name,Aggregate Name,Disk Count
-      - name: Name services
-        icon: list
-        sections:
-          - name: DNS AND NTP
+          - name: DNS and NTP
             inputs:
               - name: dns_domain_name
               - name: dns_servers
               - name: ntp_servers
-      - name: Support and licenses
-        icon: email
-        sections:
-          - name: AUTOSUPPORT
+          - name: AutoSupport Paramaters
             inputs:
               - name: autosupport_mail_hosts
               - name: autosupport_from_address
               - name: autosupport_to_addresses
               - name: autosupport_proxy_url
-          - name: LICENSES
+          - name: ONTAP Licenses
             inputs:
               - name: legacy_license_keys
               - name: nlf_license_content
-      - name: Security
-        icon: list
-        sections:
-          - name: FIPS AND SNMP
+          - name: FIPS and SNMP Confguration Paramaters
             inputs:
               - name: is_fips_enabled
               - name: snmp_contact
