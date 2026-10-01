@@ -143,11 +143,15 @@ customization:
               - name: snmp_auth_password
               - name: snmp_priv_protocol
               - name: snmp_priv_password
-          - name: IP space and Broadcast Domain Configuration
-            inputs:
-              - name: ipspace_name
-              - name: ib_mgmt_vlan_name
-              - name: ib_mgmt_vlan_id
+          - name: IP space and VLAN
+            sections:
+              - name: IP Space Configuration
+                inputs:
+                  - name: ipspace_name
+                  - name: IB MGMT Configuration
+                    inputs:
+                    - name: ib_mgmt_vlan_name
+                    - name: ib_mgmt_vlan_id
 inputs:
   agent:
     type: agent
