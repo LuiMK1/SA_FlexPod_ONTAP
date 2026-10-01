@@ -708,8 +708,10 @@ grains:
         - ontap_password: '{{ .inputs.ontap_password }}'
         - mtu: 9000
         - ipspace_name: '{{ .inputs.ipspace_name }}'
-        - broadcast_domain_names: '{{ [.inputs.iscsiA_vlan_name,.inputs.iscsiB_vlan_name] | list }}'
-  
+        - broadcast_domain_names: 
+          - '{{ .inputs.iscsiA_vlan_name }}'
+          - '{{ .inputs.iscsiB_vlan_name }}'
+
   create_NFS_broadcast_domain:
     kind: ansible
     spec:
