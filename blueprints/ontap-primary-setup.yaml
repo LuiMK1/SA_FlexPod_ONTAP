@@ -146,6 +146,8 @@ customization:
           - name: IP space and Broadcast Domain Configuration
             inputs:
               - name: ipspace_name
+              - name: ib_mgmt_vlan_name
+              - name: ib_mgmt_vlan_id
 inputs:
   agent:
     type: agent
@@ -302,6 +304,14 @@ inputs:
     type: string
     default: ""
     description: Name of the IP space to be created.
+  ib_mgmt_vlan_name:
+    type: string
+    default: ""
+    description: Name of the IB management VLAN.
+  ib_mgmt_vlan_id:
+    type: string
+    default: ""
+    description: ID of the IB management VLAN.
 
 grains:
   update_cluster_location:
@@ -636,4 +646,20 @@ grains:
         - ontap_hostname: '{{ .inputs.ontap_hostname }}'
         - ontap_username: '{{ .inputs.ontap_username }}'
         - ontap_password: '{{ .inputs.ontap_password }}'
+        - ipspace_name: '{{ .inputs.ipspace_name }}'
+  
+  create_mgmt_broadcast_domain:
+    kind: ansible
+    spec:
+      source:
+        store: Stack-Automation-NetApp
+        path: assets/ansible/netapp-ontap/create_broadcast_domain.yaml
+      agent:
+        name: '{{ .inputs.agent }}'
+      inputs:
+        - ontap_hostname: '{{ .inputs.ontap_hostname }}'
+        - ontap_username: '{{ .inputs.ontap_username }}'
+        - ontap_password: '{{ .inputs.ontap_password }}'
+        - broadcast_domain_name: '{{ .inputs.ib_mgmt_vlan_name }}'
+        - mtu: 1500
         - ipspace_name: '{{ .inputs.ipspace_name }}'
