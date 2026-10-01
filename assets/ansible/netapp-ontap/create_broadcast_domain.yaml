@@ -8,12 +8,14 @@
 
     - name: Create Broadcast Domain
       netapp.ontap.na_ontap_broadcast_domain:
-      state: present
-      broadcast_domain: "{{broadcast_domain_name}}"
-      ipspace: "{{ipspace_name}}"
-      mtu: "{{mtu}}"
-      hostname: "{{ontap_hostname}}"
-      username: "{{ontap_username}}"
-      password: "{{ontap_password}}"
-      https: true
-      validate_certs: false
+        state: present
+        broadcast_domain: "{{item}}"
+        ipspace: "{{ipspace_name}}"
+        mtu: "{{mtu}}"
+        hostname: "{{ontap_hostname}}"
+        username: "{{ontap_username}}"
+        password: "{{ontap_password}}"
+        https: true
+        validate_certs: false
+      loop: "{{ broadcast_domain_names }}"
+      

@@ -143,11 +143,17 @@ customization:
               - name: snmp_auth_password
               - name: snmp_priv_protocol
               - name: snmp_priv_password
-          - name: IP space and VLAN Details
+          - name: IP space and VLAN
             inputs:
               - name: ipspace_name
               - name: ib_mgmt_vlan_name
               - name: ib_mgmt_vlan_id
+              - name: iscsiA_vlan_name
+              - name: iscsiA_vlan_id
+              - name: iscsiB_vlan_name
+              - name: iscsiB_vlan_id
+              - name: nfs_vlan_name
+              - name: nfs_vlan_id
 inputs:
   agent:
     type: agent
@@ -306,12 +312,36 @@ inputs:
     description: Name of the IP space to be created.
   ib_mgmt_vlan_name:
     type: string
-    default: ""
+    default: "IB_MGMT"
     description: Name of the IB management VLAN.
   ib_mgmt_vlan_id:
     type: string
     default: ""
     description: ID of the IB management VLAN.
+  iscsiA_vlan_name:
+    type: string
+    default: "ISCSI_A"
+    description: Name of the iSCSI A VLAN.
+  iscsiA_vlan_id:
+    type: string
+    default: ""
+    description: ID of the iSCSI A VLAN.
+  iscsiB_vlan_name:
+    type: string
+    default: "ISCSI_B"
+    description: Name of the iSCSI B VLAN.
+  iscsiB_vlan_id:
+    type: string
+    default: ""
+    description: ID of the iSCSI B VLAN.
+  nfs_vlan_name:
+    type: string
+    default: "NFS"
+    description: Name of the NFS VLAN.
+  nfs_vlan_id:
+    type: string
+    default: ""
+    description: ID of the NFS VLAN.
 
 grains:
   update_cluster_location:
@@ -660,6 +690,38 @@ grains:
         - ontap_hostname: '{{ .inputs.ontap_hostname }}'
         - ontap_username: '{{ .inputs.ontap_username }}'
         - ontap_password: '{{ .inputs.ontap_password }}'
-        - broadcast_domain_name: '{{ .inputs.ib_mgmt_vlan_name }}'
+        - broadcast_domain_names: '{{ .inputs.ib_mgmt_vlan_name }}'
         - mtu: 1500
         - ipspace_name: '{{ .inputs.ipspace_name }}'
+  
+  create_iSCSI_broadcast_domain:
+    kind: ansible
+    spec:
+      source:
+        store: Stack-Automation-NetApp
+        path: assets/ansible/netapp-ontap/create_broadcast_domain.yaml
+      agent:
+        name: '{{ .inputs.agent }}'
+      inputs:
+        - ontap_hostname: '{{ .inputs.ontap_hostname }}'
+        - ontap_username: '{{ .inputs.ontap_username }}'
+        - ontap_password: '{{ .inputs.ontap_password }}'
+        - mtu: 9000
+        - ipspace_name: '{{ .inputs.ipspace_name }}'
+        - broadcast_domain_names: '{{ [.inputs.iscsiA_vlan_name,.inputs.iscsiB_vlan_name] | list }}'
+  
+  create_NFS_broadcast_domain:
+    kind: ansible
+    spec:
+      source:
+        store: Stack-Automation-NetApp
+        path: assets/ansible/netapp-ontap/create_broadcast_domain.yaml
+      agent:
+        name: '{{ .inputs.agent }}'
+      inputs:
+        - ontap_hostname: '{{ .inputs.ontap_hostname }}'
+        - ontap_username: '{{ .inputs.ontap_username }}'
+        - ontap_password: '{{ .inputs.ontap_password }}'
+        - mtu: 9000
+        - ipspace_name: '{{ .inputs.ipspace_name }}'
+        - broadcast_domain_names: '{{ .inputs.nfs_vlan_name }}'
